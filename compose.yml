@@ -1,0 +1,26 @@
+# Ollama — local LLM runtime.
+# docs: docs/ollama.md
+#
+# Serves the API on :11434. Uncomment the GPU block for NVIDIA acceleration.
+services:
+  ollama:
+    image: ollama/ollama
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ${OLLAMA_DATA:-./ollama}:/root/.ollama
+    environment:
+      - TZ=${TZ:-America/Denver}
+      - OLLAMA_HOST=0.0.0.0:11434
+      - OLLAMA_KEEP_ALIVE=${OLLAMA_KEEP_ALIVE:-5m}
+      - OLLAMA_CONTEXT_LENGTH=${OLLAMA_CONTEXT_LENGTH:-4096}
+    # GPU (NVIDIA) — requires the nvidia container runtime on the host.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
